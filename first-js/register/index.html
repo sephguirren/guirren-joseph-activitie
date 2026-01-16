@@ -3,20 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="js/login.js"></script>
+    <title>Register</title>
 
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/login.js" defer></script>
 </head>
 <body>
-    <form action="">
-        <h1>REGISTER</h1>
-        <p>Username:</p>
-        <input type="text" id="username" name="name"><br>
-        <p>Password:</p>
-        <input type="password" id="password" name="password"><br>
-        <p>Confirm Password:</p>
-        <input type="password" id="conpass" name="confirmp"><br><br>
-        <input type="button" value="login" onclick="login()">
-    </form>
+
+    <div class="register-box">
+        <form>
+            <h1>REGISTER</h1>
+
+            <label>Username</label>
+            <input type="text" id="username">
+            <label>Password</label>
+            <input type="password" id="password">
+            <label>Confirm Password</label>
+            <input type="password" id="conpass">
+
+            <button type="button" onclick="register()">Register</button>
+        </form>
+    </div>
+
 </body>
 </html>
