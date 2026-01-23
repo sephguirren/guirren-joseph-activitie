@@ -81,7 +81,7 @@ button[onclick="ac()"] {
     grid-column: span 2;
 }
 
-button[onclick="clear()"] {
+button[onclick="del()"] {
     background-color: #ff6b6b;
     color: white;
     grid-column: span 2;

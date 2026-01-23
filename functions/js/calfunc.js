@@ -1,1 +1,1 @@
-//para calculator
+//calculator functions
