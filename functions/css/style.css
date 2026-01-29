@@ -23,10 +23,12 @@ body {
 
 #display-container {
     margin-bottom: 15px;
+    display: flex; 
+    gap: 5px; 
 }
 
 #display {
-    width: 100%;
+    width: 75%;
     height: 50px;
     font-size: 2rem;
     text-align: right;
@@ -37,9 +39,21 @@ body {
     color: #fff;
 }
 
+#operator {
+    width: 25%; 
+    height: 50px;
+    font-size: 2rem;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #222;
+    color: #fff; 
+}
+
 #buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    grid-template-columns: repeat(4, 1fr);
     gap: 10px;
 }
 
