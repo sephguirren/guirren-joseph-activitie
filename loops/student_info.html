@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grades</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="content-wrapper">
+        <h2 class="section-title">Student Grade Records</h2>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search student...">
+            <button class="btn-search" onclick="searchStudent()">Search</button>
+        </div>
+
+        <div class="filter-container">
+            <button class="btn-filter" onclick="filterByAttendance(true)">Present</button>
+            <button class="btn-filter" onclick="filterByAttendance(false)">Absent</button>
+            <button class="btn-filter" onclick="filterByRemarks('PASSED')">Passed</button>
+            <button class="btn-filter" onclick="filterByRemarks('FAILED')">Failed</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th style="text-align: left;">NAME</th>
+                    <th>SUB 1</th>
+                    <th>SUB 2</th>
+                    <th>SUB 3</th>
+                    <th>AVERAGE</th>
+                    <th>REMARKS</th>
+                </tr>
+            </thead>
+            <tbody id="studentTableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script src="js/stud.js"></script>
+</body>
+</html>
