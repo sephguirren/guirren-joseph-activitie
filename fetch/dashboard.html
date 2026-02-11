@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Student List</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Student Records</h2>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Course</th>
+                    <th>Year</th>
+                </tr>
+            </thead>
+            <tbody id="studentTableBody">
+                <tr><td colspan="6" style="text-align:center;">Loading data...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="js/fetch.js"></script>
+    
+    <script>
+        function logout() {
+            window.location.href = "index.html"; 
+        }
+    </script>
+</body>
+</html>

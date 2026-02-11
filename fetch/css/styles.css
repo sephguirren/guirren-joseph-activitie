@@ -1,0 +1,176 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+    /* Changed to a dark gray/black gradient */
+    background: linear-gradient(135deg, #2c3e50, #000000); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-container {
+    background: #fff;
+    width: 350px;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); /* Stronger shadow for contrast */
+    text-align: center;
+}
+
+.login-container h2 {
+    margin-bottom: 5px;
+    color: #000; /* Pure black text */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: #666; /* Medium gray */
+    margin-bottom: 30px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px; /* Sharper corners fit B&W better */
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+    background-color: #f9f9f9;
+}
+
+.login-container input:focus {
+    /* Focus border is now black */
+    border-color: #000;
+    background-color: #fff;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 14px;
+    background: #000; /* Black button */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-container button:hover {
+    /* Dark gray on hover */
+    background: #333;
+}
+
+#result {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #000;
+    font-weight: bold;
+}
+
+/* A wider container for the table, matching the login card style */
+.dashboard-container {
+    background: #fff;
+    width: 90%;           /* Takes up 90% of screen width */
+    max-width: 1000px;    /* But stops growing at 1000px */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    
+    /* Important: Handles scrolling if the list is long */
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Section (Title + Button) */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #000; /* Minimalist divider */
+    padding-bottom: 15px;
+}
+
+.dashboard-header h2 {
+    color: #000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 24px;
+}
+
+/* Logout Button (Small & Minimal) */
+.btn-logout {
+    background: transparent;
+    border: 1px solid #000;
+    color: #000;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* --- MINIMALIST TABLE DESIGN --- */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse; /* Removes gaps between cells */
+    font-size: 14px;
+}
+
+/* Table Header */
+.styled-table thead tr {
+    background-color: #000; /* Black Header */
+    color: #ffffff;
+    text-align: left;
+    font-weight: bold;
+}
+
+.styled-table th, 
+.styled-table td {
+    padding: 15px 15px;
+}
+
+/* Table Rows */
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd; /* Thin grey line */
+}
+
+/* Hover Effect */
+.styled-table tbody tr:hover {
+    background-color: #f1f1f1; /* Light gray on hover */
+    cursor: default;
+}
+
+/* Scrollbar Styling (Optional: Makes scrollbar look nicer) */
+.dashboard-container::-webkit-scrollbar {
+    width: 8px;
+}
+.dashboard-container::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 4px;
+}
+.dashboard-container::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
