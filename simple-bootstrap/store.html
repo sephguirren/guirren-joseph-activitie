@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store - Buy Items</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: system-ui, -apple-system, sans-serif; padding-top: 80px; }
+        .navbar { height: 70px; }
+        .product-card { background: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; transition: transform 0.2s; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .badge-stock { font-size: 0.8rem; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-light bg-white border-bottom fixed-top px-4 shadow-sm">
+        <span class="navbar-brand mb-0 h1 fs-4 fw-bold">🛒 General Store</span>
+        <div class="d-flex align-items-center">
+            <button class="btn btn-dark px-4 position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
+                My Cart
+                <span id="cartBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                    0
+                </span>
+            </button>
+            <button class="btn btn-link text-muted ms-3 text-decoration-none" onclick="window.location.href='login.html'">Admin Login</button>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="row mb-4">
+            <div class="col text-center">
+                <h2 class="fw-bold">Available Products</h2>
+                <p class="text-muted">Click on an item to add it to your cart.</p>
+            </div>
+        </div>
+
+        <div class="row g-4" id="productGrid">
+            </div>
+    </div>
+
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold">Shopping Cart</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group list-group-flush mb-3" id="cartItemsList">
+                        </ul>
+                    <div id="emptyCartMessage" class="text-center text-muted py-3">Your cart is empty.</div>
+                    <button id="checkoutBtn" class="btn btn-success w-100 fw-bold fs-5 mt-2" style="display: none;" onclick="checkout()">
+                        CONFIRM CHECKOUT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 1. Load the exact same inventory the Admin sees
+        let inventory = JSON.parse(localStorage.getItem('inv_items')) || [];
+        let cart = []; // Temporary storage for shopping
+
+        // 2. Render the Storefront
+        function renderStore() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+
+            if (inventory.length === 0) {
+                grid.innerHTML = '<div class="col text-center text-muted mt-5"><h4>No products available right now.</h4></div>';
+                return;
+            }
+
+            inventory.forEach(item => {
+                const isOutOfStock = parseInt(item.qty) <= 0;
+                
+                grid.innerHTML += `
+                    <div class="col-md-4 col-sm-6">
+                        <div class="product-card p-4 text-center h-100 d-flex flex-column justify-content-between">
+                            <div>
+                                <h4 class="fw-bold mb-1">${item.name}</h4>
+                                <p class="text-muted small text-uppercase mb-3">${item.unit}</p>
+                                
+                                ${isOutOfStock 
+                                    ? `<span class="badge bg-danger badge-stock mb-3">OUT OF STOCK</span>` 
+                                    : `<span class="badge bg-success badge-stock mb-3">${item.qty} IN STOCK</span>`
+                                }
+                            </div>
+                            
+                            <button class="btn btn-outline-dark w-100 fw-bold mt-auto" 
+                                    ${isOutOfStock ? 'disabled' : ''} 
+                                    onclick="addToCart(${item.id})">
+                                ${isOutOfStock ? 'UNAVAILABLE' : '+ ADD TO CART'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // 3. Add Item to Cart
+        function addToCart(itemId) {
+            const product = inventory.find(i => i.id === itemId);
+            
+            // Check if we already have it in the cart to just increase the amount
+            const existingCartItem = cart.find(c => c.id === itemId);
+            
+            if (existingCartItem) {
+                // Prevent adding more than what is in stock
+                if (existingCartItem.buyQty >= product.qty) {
+                    alert("You cannot buy more than what is in stock!");
+                    return;
+                }
+                existingCartItem.buyQty++;
+            } else {
+                // Add new item to cart
+                cart.push({ id: product.id, name: product.name, buyQty: 1 });
+            }
+
+            updateCartUI();
+        }
+
+        // 4. Update the Cart visuals (Badge and Modal list)
+        function updateCartUI() {
+            const badge = document.getElementById('cartBadge');
+            const list = document.getElementById('cartItemsList');
+            const emptyMsg = document.getElementById('emptyCartMessage');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            
+            // Total items in cart
+            const totalItems = cart.reduce((sum, item) => sum + item.buyQty, 0);
+
+            // Update Badge
+            if (totalItems > 0) {
+                badge.style.display = 'inline-block';
+                badge.innerText = totalItems;
+                emptyMsg.style.display = 'none';
+                checkoutBtn.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+                emptyMsg.style.display = 'block';
+                checkoutBtn.style.display = 'none';
+            }
+
+            // Update Modal List
+            list.innerHTML = '';
+            cart.forEach(item => {
+                list.innerHTML += `
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <div>
+                            <span class="fw-bold">${item.name}</span>
+                            <br><small class="text-muted">Qty: ${item.buyQty}</small>
+                        </div>
+                        <button class="btn btn-sm btn-danger px-2 py-0" onclick="removeFromCart(${item.id})">&times;</button>
+                    </li>
+                `;
+            });
+        }
+
+        // Remove item from cart completely
+        function removeFromCart(itemId) {
+            cart = cart.filter(item => item.id !== itemId);
+            updateCartUI();
+        }
+
+        // --- LOGGER FUNCTION (So the Admin sees the sale!) ---
+        function logActivity(message) {
+            let logs = JSON.parse(localStorage.getItem('inv_activity')) || [];
+            const newId = logs.length ? Math.max(...logs.map(l => l.id)) + 1 : 1001;
+            const date = new Date().toLocaleString();
+            logs.unshift({ id: newId, text: message, date: date });
+            if(logs.length > 10) logs.pop(); 
+            localStorage.setItem('inv_activity', JSON.stringify(logs));
+        }
+
+        // 5. Checkout (The Magic Part)
+        function checkout() {
+            if(cart.length === 0) return;
+
+            // Subtract bought quantities from the main inventory
+            cart.forEach(cartItem => {
+                const invItemIndex = inventory.findIndex(i => i.id === cartItem.id);
+                if(invItemIndex !== -1) {
+                    inventory[invItemIndex].qty -= cartItem.buyQty; // Deduct from stock
+                    
+                    // Send a log to the Admin Dashboard
+                    logActivity(`🛒 Sale: Customer bought ${cartItem.buyQty}x <span class="fw-bold text-success">${cartItem.name}</span>`);
+                }
+            });
+
+            // Save the updated inventory back to the browser!
+            localStorage.setItem('inv_items', JSON.stringify(inventory));
+
+            // Clear the cart
+            cart = [];
+            updateCartUI();
+            
+            // Redraw the store to show new stock numbers
+            renderStore();
+
+            // Close modal and alert
+            bootstrap.Modal.getInstance(document.getElementById('cartModal')).hide();
+            alert("Checkout Successful! Thank you for your purchase.");
+        }
+
+        // Run when page loads
+        document.addEventListener("DOMContentLoaded", renderStore);
+    </script>
+</body>
+</html>

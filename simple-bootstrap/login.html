@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Inventory System</title>
+    
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <script src="/bootstrap/js/bootstrap.js"></script>
+    
+    <style>
+        /* Minimalist tweaks */
+        body {
+            background-color: #f8f9fa; /* Matches the dashboard background */
+        }
+        
+        .login-card {
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid #eaeaea;
+            border-radius: 8px;
+        }
+
+        /* Removes the default blue glow on Bootstrap inputs and makes it dark gray */
+        .form-control:focus {
+            border-color: #444;
+            box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-label {
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            color: #555;
+        }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center vh-100">
+
+    <div class="card login-card shadow-sm p-4 p-md-5 bg-white">
+        
+        <div class="text-center mb-4">
+            <h2 class="fw-normal mb-1">Inventory System</h2>
+            <p class="text-muted small text-uppercase" style="letter-spacing: 1px;">Sign In</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label fw-bold">USERNAME</label>
+                <input type="text" class="form-control form-control-lg bg-light" id="username" required>
+            </div>
+            
+            <div class="mb-4">
+                <label for="password" class="form-label fw-bold">PASSWORD</label>
+                <input type="password" class="form-control form-control-lg bg-light" id="password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-dark btn-lg w-100 fs-6 fw-bold">LOGIN</button>
+        </form>
+        
+        <div id="loginAlert" class="mt-3 text-center small text-danger fw-bold"></div>
+        
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop page reload
+            
+            const btn = this.querySelector('button');
+            const originalText = btn.innerText;
+            
+            // Show loading state
+            btn.innerText = 'AUTHENTICATING...';
+            btn.classList.add('disabled');
+            
+            // Simulate a short network delay, then redirect to the dashboard
+            setTimeout(() => {
+                // Change 'inventory.html' to whatever you named the dashboard file
+                window.location.href = 'dashboard.html'; 
+            }, 800);
+        });
+    </script>
+</body>
+</html>

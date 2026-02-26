@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Units - Inventory System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; overflow-x: hidden; }
+        .sidebar { min-height: calc(100vh - 60px); background-color: #ffffff; border-right: 1px solid #eaeaea; }
+        .sidebar .nav-link { color: #555; padding: 12px 20px; margin-bottom: 5px; border-radius: 0 8px 8px 0; margin-right: 15px; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #f1f3f5; color: #000; font-weight: 500; }
+        .content-card { background: #ffffff; border: 1px solid #eaeaea; border-radius: 8px; padding: 24px; }
+        .btn-action { font-size: 0.8rem; font-weight: bold; text-decoration: none; padding: 0; margin-right: 15px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-light bg-white border-bottom px-4" style="height: 60px;">
+        <span class="navbar-brand mb-0 h1 fs-4 fw-normal">Inventory System</span>
+        <button class="btn btn-outline-dark btn-sm px-3" onclick="window.location.href='store.html'">Logout</button>
+    </nav>
+
+    <div class="row g-0">
+        <div class="col-md-2 sidebar py-3">
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="items.html">Items</a></li>
+                <li class="nav-item"><a class="nav-link" href="categories.html">Categories</a></li>
+                <li class="nav-item"><a class="nav-link active" href="units.html">Units</a></li>
+            </ul>
+        </div>
+
+        <div class="col-md-10 p-4">
+            <div class="content-card shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <input type="text" id="searchInput" class="form-control bg-light border-0" placeholder="Search units..." style="max-width: 400px;">
+                    <button class="btn btn-dark px-4" data-bs-toggle="modal" data-bs-target="#dataModal" id="btnAdd">Add Unit</button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr><th>ID</th><th>Unit Name</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody id="tableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="dataModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Add Unit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="dataForm">
+                        <input type="hidden" id="dataId">
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-muted">UNIT NAME</label>
+                            <input type="text" id="dataName" class="form-control bg-light" placeholder="e.g. Boxes, Kilograms" required>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 fw-bold">SAVE</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- LOGGER FUNCTION ---
+        function logActivity(message) {
+            let logs = JSON.parse(localStorage.getItem('inv_activity')) || [];
+            const newId = logs.length ? Math.max(...logs.map(l => l.id)) + 1 : 1001;
+            const date = new Date().toLocaleString();
+            
+            logs.unshift({ id: newId, text: message, date: date });
+            if(logs.length > 10) logs.pop(); 
+            localStorage.setItem('inv_activity', JSON.stringify(logs));
+        }
+
+        let dataList = JSON.parse(localStorage.getItem('inv_units')) || [{id:1, name:'Bags'}, {id:2, name:'Pieces'}];
+        let editMode = false;
+        const modal = new bootstrap.Modal(document.getElementById('dataModal'));
+
+        function renderTable(searchQuery = '') {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            const filtered = dataList.filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase()));
+            
+            filtered.forEach(d => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${d.id}</td>
+                        <td class="fw-bold">${d.name}</td>
+                        <td>
+                            <button class="btn btn-link btn-action text-dark" onclick='editData(${JSON.stringify(d)})'>EDIT</button>
+                            <button class="btn btn-link btn-action text-danger" onclick='deleteData(${d.id}, "${d.name}")'>DELETE</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => renderTable(e.target.value));
+
+        document.getElementById('dataForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('dataId').value;
+            const name = document.getElementById('dataName').value;
+
+            if (editMode) {
+                const index = dataList.findIndex(d => d.id == id);
+                dataList[index] = { id: parseInt(id), name };
+                logActivity(`Updated Unit: <span class="fw-bold">${name}</span>`);
+            } else {
+                const newId = dataList.length ? Math.max(...dataList.map(d => d.id)) + 1 : 1;
+                dataList.push({ id: newId, name });
+                logActivity(`Added Unit: <span class="fw-bold">${name}</span>`);
+            }
+
+            localStorage.setItem('inv_units', JSON.stringify(dataList));
+            modal.hide();
+            renderTable();
+        });
+
+        function editData(d) {
+            editMode = true;
+            document.getElementById('modalTitle').innerText = 'Edit Unit';
+            document.getElementById('dataId').value = d.id;
+            document.getElementById('dataName').value = d.name;
+            modal.show();
+        }
+
+        function deleteData(id, name) {
+            if(confirm('Delete this unit?')) {
+                dataList = dataList.filter(d => d.id !== id);
+                localStorage.setItem('inv_units', JSON.stringify(dataList));
+                logActivity(`Deleted Unit: <span class="fw-bold text-danger">${name}</span>`);
+                renderTable();
+            }
+        }
+
+        document.getElementById('btnAdd').addEventListener('click', () => {
+            editMode = false;
+            document.getElementById('modalTitle').innerText = 'Add Unit';
+            document.getElementById('dataForm').reset();
+        });
+
+        renderTable();
+    </script>
+</body>
+</html>
